@@ -1,0 +1,18 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 9px;
+  color: var(--color-heading);
+  font-family: var(--font-heading), sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 41px;
+  letter-spacing: -1px;
+
+  svg {
+    width: 30px;
+    height: 37px;
+    color: var(--color-primary);
+  }
+}

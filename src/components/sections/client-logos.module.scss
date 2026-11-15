@@ -1,0 +1,54 @@
+@use "../../styles/mixins" as *;
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 2px solid var(--color-border);
+  border-left: 2px solid var(--color-border);
+}
+.logo {
+  gap: 12px;
+  color: var(--color-heading);
+  font-family: var(--font-heading), sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  svg {
+    flex-shrink: 0;
+    color: var(--color-primary);
+  }
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 15px;
+  border-right: 2px solid var(--color-border);
+  border-bottom: 2px solid var(--color-border);
+  img {
+    height: var(--logo-height);
+    max-height: 80px;
+    width: var(--logo-width);
+    aspect-ratio: var(--logo-ratio);
+    max-width: 100%;
+    transition: opacity var(--transition);
+  }
+  &:hover img {
+    opacity: 0.6;
+  }
+  @include until(desktop) {
+    padding-block: 50px;
+    img {
+      width: calc(44px * var(--logo-ratio));
+      height: 44px;
+      max-height: 44px;
+    }
+  }
+  @include until(medium) {
+    padding-block: 24px;
+    flex-direction: column;
+    font-size: 22px;
+  }
+}
+@include until(small) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

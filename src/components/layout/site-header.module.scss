@@ -1,0 +1,164 @@
+@use "../../styles/mixins" as *;
+
+.header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding-block: 10px;
+  z-index: 100;
+  @include until(desktop) {
+    padding-block: 15px;
+  }
+}
+.sticky {
+  position: fixed;
+  background: var(--color-surface);
+  backdrop-filter: blur(9px);
+  box-shadow: 0 7px 18px #1810100d;
+  animation: header-enter 350ms ease both;
+  @include until(desktop) {
+    padding-inline: 30px;
+  }
+  @include until(large) {
+    padding-block: 10px;
+  }
+  @include until(medium) {
+    padding-inline: 7px;
+  }
+}
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+.social {
+  @include until(medium) {
+    display: none;
+  }
+}
+.menuButton {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--color-primary);
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  transition: background var(--transition);
+  &:hover {
+    background: transparent;
+    color: var(--color-primary);
+  }
+}
+.desktopNavigation {
+  @include until(desktop) {
+    display: none;
+  }
+}
+.navigationList {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.navigationItem {
+  position: relative;
+  padding-block: 10px;
+}
+.navigationLabel {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 38px;
+  padding: 4px 12px;
+  color: var(--color-heading);
+  font-size: 16px;
+  font-family: var(--font-heading), sans-serif;
+  font-weight: 700;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--color-primary);
+    border-radius: 4px;
+    opacity: 0;
+    transform: scale(0.7);
+    transition:
+      opacity var(--transition),
+      transform var(--transition);
+  }
+  a {
+    transition: color var(--transition);
+  }
+  a:hover {
+    color: var(--color-on-primary);
+  }
+  button {
+    color: inherit;
+    background: none;
+    border: 0;
+    padding: 5px 0;
+  }
+}
+.navigationItem:hover .navigationLabel::before,
+.navigationItem:focus-within .navigationLabel::before {
+  opacity: 1;
+  transform: scale(1);
+}
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: -20px;
+  min-width: 220px;
+  padding: 12px 0;
+  border-radius: 0 0 8px 8px;
+  border-top: 3px solid var(--color-primary);
+  background: var(--color-background);
+  box-shadow: 0 15px 30px #00000014;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition:
+    opacity 250ms ease,
+    transform 250ms ease,
+    visibility 250ms;
+  &[data-open="true"] {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  a {
+    display: block;
+    padding: 8px 20px;
+    font-size: 14px;
+    transition:
+      color var(--transition),
+      padding var(--transition);
+    &:hover {
+      color: var(--color-primary);
+      padding-left: 25px;
+    }
+  }
+}
+@keyframes header-enter {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.navigationItem:hover .navigationLabel,
+.navigationItem:focus-within .navigationLabel {
+  color: var(--color-on-primary);
+}

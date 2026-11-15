@@ -1,0 +1,11 @@
+{
+  "reference": "https://inversweb.com/product/html/reeni/index.html",
+  "template": "https://themeforest.net/item/reeni-personal-portfolio-html-template/56387656",
+  "author": "InversWeb",
+  "description": "Public demo imagery used in the sammy portfolio. Original rights are retained by their respective owners.",
+  "fonts": {
+    "families": ["Rajdhani", "Rubik"],
+    "source": "Google Fonts",
+    "license": "SIL Open Font License 1.1"
+  }
+}

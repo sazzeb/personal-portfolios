@@ -1,0 +1,31 @@
+@use "../../styles/mixins" as *;
+
+.card {
+  padding: 80px 60px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  align-items: center;
+  gap: 30px;
+}
+.heading {
+  margin: 0;
+  padding-right: 80px;
+}
+@include until(large) {
+  .card {
+    padding: 40px;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .heading {
+    padding-right: 0;
+  }
+}
+@include until(medium) {
+  .card {
+    padding: 30px 20px;
+  }
+}

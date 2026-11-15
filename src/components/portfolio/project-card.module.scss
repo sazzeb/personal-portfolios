@@ -1,0 +1,102 @@
+@use "../../styles/mixins" as *;
+
+.imageFrame {
+  display: block;
+  padding: 20px;
+  border: 2px solid var(--color-border);
+  border-radius: 20px;
+  background: var(--color-surface);
+  transition: border-color var(--transition);
+}
+.imageClip {
+  overflow: hidden;
+  border-radius: 20px;
+}
+.imageClip img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1939 / 1572;
+  object-fit: cover;
+  transition: transform 400ms ease;
+}
+.card:hover .imageClip img {
+  transform: scale(1.03);
+}
+.card:hover .imageFrame {
+  border-color: var(--color-primary-border-hover);
+}
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 33px;
+  h3 {
+    @include heading(24px, 30px);
+    a {
+      transition: color var(--transition);
+    }
+    a:hover {
+      color: var(--color-primary);
+    }
+  }
+  p {
+    margin-top: 10px;
+    line-height: 30px;
+  }
+}
+.arrow {
+  position: relative;
+  display: block;
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 2px solid var(--color-border);
+  border-radius: 50%;
+  color: var(--color-heading);
+  transition:
+    background var(--transition),
+    border-color var(--transition);
+  &:hover {
+    color: var(--color-on-primary);
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+}
+.firstArrow,
+.secondArrow {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  transition: transform 400ms ease;
+}
+.secondArrow {
+  transform: translate(-50px, 50px);
+}
+.arrow:hover .firstArrow {
+  transform: translate(50px, -50px);
+}
+.arrow:hover .secondArrow {
+  transform: translate(0, 0);
+}
+@include until(large) {
+  .imageFrame {
+    padding: 10px;
+  }
+}
+@include until(medium) {
+  .content {
+    margin-top: 15px;
+  }
+}
+@include until(small) {
+  .imageFrame {
+    padding: 5px;
+  }
+}
+@media (max-width: 479px) {
+  .content h3 {
+    font-size: 20px;
+  }
+}

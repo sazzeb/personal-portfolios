@@ -1,0 +1,96 @@
+@use "../../styles/mixins" as *;
+
+.list {
+  position: relative;
+}
+.highlight {
+  position: absolute;
+  top: var(--highlight-top, 0px);
+  height: var(--highlight-height, 0px);
+  width: 100%;
+  background: var(--color-primary);
+  opacity: 0;
+  transition:
+    top 500ms ease,
+    height 500ms ease,
+    opacity 300ms ease;
+}
+.list[data-highlight="true"] .highlight {
+  opacity: 1;
+}
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 43px 20px 32px;
+  border-top: 2px solid var(--color-border);
+}
+.icon {
+  display: grid;
+  place-items: center;
+  width: 70px;
+  height: 70px;
+  border: 2px solid var(--color-border);
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: color var(--transition);
+}
+.title {
+  flex-shrink: 0;
+  h3 {
+    @include heading(32px, 42px);
+  }
+  p {
+    color: var(--color-heading);
+    font-family: var(--font-heading), sans-serif;
+    font-size: 18px;
+    line-height: 27px;
+  }
+}
+.description {
+  max-width: 452px;
+  line-height: 30px;
+  transition: color var(--transition);
+}
+.readMore {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-heading);
+  white-space: nowrap;
+  font-family: var(--font-heading), sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 32px;
+  letter-spacing: 1.28px;
+  text-transform: uppercase;
+  gap: 3px;
+}
+.row:hover,
+.row:focus-within {
+  .icon,
+  .description,
+  .title h3,
+  .title p,
+  .readMore {
+    color: var(--color-on-primary);
+  }
+}
+@include until(desktop) {
+  .title h3 {
+    font-size: 17px;
+    line-height: 1.2;
+  }
+}
+@include until(large) {
+  .row {
+    flex-direction: column;
+    text-align: center;
+    gap: 0;
+  }
+  .title h3 {
+    font-size: 32px;
+    line-height: 42px;
+  }
+}

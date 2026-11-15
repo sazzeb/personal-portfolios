@@ -1,0 +1,79 @@
+@use "../../styles/mixins" as *;
+
+.heroImage {
+  overflow: hidden;
+  border-radius: 20px;
+  margin-bottom: 45px;
+  img {
+    display: block;
+    width: 100%;
+    max-height: 650px;
+    object-fit: cover;
+  }
+}
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 45px;
+  align-items: start;
+}
+.article {
+  h2 {
+    @include heading(42px, 1.25);
+    margin-bottom: 25px;
+  }
+  h3 {
+    @include heading(28px);
+    margin: 30px 0 20px;
+  }
+  p {
+    margin-bottom: 20px;
+    line-height: 30px;
+  }
+  ul {
+    display: grid;
+    gap: 10px;
+    margin-block: 25px;
+    color: var(--color-heading);
+  }
+  li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  svg {
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+}
+.aside {
+  padding: 30px;
+  h2 {
+    @include heading(28px);
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--color-border);
+  }
+  dl {
+    margin: 20px 0 30px;
+  }
+  dl div {
+    padding-block: 10px;
+    border-bottom: 1px solid var(--color-border);
+  }
+  dt {
+    color: var(--color-heading);
+  }
+  dd {
+    margin: 0;
+  }
+}
+@include until(large) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+@include until(small) {
+  .article h2 {
+    font-size: 30px;
+  }
+}

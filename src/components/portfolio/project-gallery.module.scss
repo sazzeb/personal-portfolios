@@ -1,0 +1,27 @@
+@use "../../styles/mixins" as *;
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 40px 50px;
+  &[data-layout="grid"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  &[data-layout="cards"] article {
+    padding: 20px;
+    border-radius: 20px;
+    background: var(--color-surface);
+  }
+  @include until(large) {
+    gap: 30px;
+    &[data-layout="grid"] {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @include until(small) {
+    grid-template-columns: 1fr;
+    &[data-layout="grid"] {
+      grid-template-columns: 1fr;
+    }
+  }
+}

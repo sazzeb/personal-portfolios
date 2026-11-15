@@ -1,0 +1,101 @@
+@use "../../styles/mixins" as *;
+
+.education {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+.card {
+  padding: 50px 40px;
+  h3 {
+    color: var(--color-heading);
+    font-family: var(--font-body), sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 26px;
+  }
+}
+.years {
+  @include heading(18px, 28px);
+  margin-top: 5px;
+}
+.description {
+  margin-top: 18px;
+  line-height: 30px;
+}
+.experiences {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-top: 75px;
+}
+.history {
+  padding-inline: 40px;
+  @include from(desktop) {
+    padding: 0 30px 0 0;
+  }
+}
+.job {
+  margin-bottom: 50px;
+  &:last-child {
+    margin-bottom: 0;
+  }
+  h3 {
+    @include heading(24px, 30px);
+  }
+}
+.eyebrow {
+  color: var(--color-primary);
+  font-weight: 500;
+  line-height: 28px;
+}
+.role {
+  color: var(--color-heading);
+  font-family: var(--font-heading), sans-serif;
+  font-size: 18px;
+  line-height: 27px;
+  margin-top: 6px;
+}
+.jobDescription {
+  margin-top: 16px;
+  line-height: 30px;
+}
+.image {
+  align-self: start;
+  overflow: hidden;
+  img {
+    width: 100%;
+    border-radius: 20px;
+  }
+}
+@media (min-width: 1200px) and (max-width: 1599px) {
+  .card {
+    padding: 20px;
+  }
+}
+@include until(desktop) {
+  .job {
+    margin-bottom: 30px;
+  }
+}
+@include until(large) {
+  .experiences {
+    grid-template-columns: 1fr;
+  }
+}
+@include until(medium) {
+  .card {
+    padding: 30px 20px;
+  }
+  .description {
+    margin-top: 8px;
+  }
+}
+@include until(small) {
+  .education {
+    grid-template-columns: 1fr;
+  }
+  .history {
+    padding-inline: 15px;
+  }
+}

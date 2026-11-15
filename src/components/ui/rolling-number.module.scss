@@ -1,0 +1,33 @@
+.number {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1.15;
+}
+.digits {
+  display: inline-flex;
+}
+.slot {
+  display: inline-block;
+  height: 1.15em;
+  overflow: hidden;
+}
+.track {
+  display: flex;
+  flex-direction: column;
+  transform: translateY(calc(var(--end-digit) * -1.15em));
+  span {
+    display: block;
+    height: 1.15em;
+    min-height: 1.15em;
+    text-align: center;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  :global(html[data-motion="enabled"]) .number .track {
+    transform: translateY(0);
+    transition: transform 2s cubic-bezier(0.15, 0.75, 0.25, 1);
+  }
+  :global(html[data-motion="enabled"]) .number[data-visible="true"] .track {
+    transform: translateY(calc(var(--end-digit) * -1.15em));
+  }
+}

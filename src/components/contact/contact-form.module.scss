@@ -1,0 +1,68 @@
+@use "../../styles/mixins" as *;
+
+.form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+.field,
+.message {
+  min-width: 0;
+}
+.field input,
+.message textarea {
+  display: block;
+  width: 100%;
+  padding: 15px 20px;
+  border: 2px solid var(--color-border);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--color-heading);
+  font-size: 16px;
+  font-family: var(--font-heading), sans-serif;
+  font-weight: 600;
+  line-height: 28px;
+  transition: border-color var(--transition);
+  &::placeholder {
+    color: var(--color-text);
+    font-family: var(--font-body), sans-serif;
+    font-weight: 400;
+    opacity: 1;
+  }
+  &:focus {
+    border-color: var(--color-primary);
+    outline: none;
+  }
+}
+.message {
+  grid-column: 1 / -1;
+  textarea {
+    min-height: 160px;
+    height: 160px;
+    padding: 15px;
+    resize: vertical;
+  }
+}
+.submit,
+.status {
+  grid-column: 1 / -1;
+}
+.status {
+  font-size: 13px;
+  line-height: 1.7;
+  &:empty {
+    display: none;
+  }
+}
+.compact {
+  grid-template-columns: 1fr;
+  gap: 12px;
+  .message textarea {
+    min-height: 110px;
+  }
+}
+@include until(large) {
+  .form {
+    grid-template-columns: 1fr;
+  }
+}

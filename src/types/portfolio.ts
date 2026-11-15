@@ -20,6 +20,11 @@ export interface Project {
   category: string;
   image: string;
   imageAlt: string;
+  imageWidth?: number;
+  imageHeight?: number;
+  deferred?: boolean;
+  platform?: string;
+  platformLabel?: string;
 }
 
 export interface Article {

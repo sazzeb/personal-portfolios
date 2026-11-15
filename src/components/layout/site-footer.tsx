@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin } from "lucide-react";
 import { sammy } from "@/config/sammy";
 import { Logo } from "./logo";
-import { NewsletterForm } from "./newsletter-form";
 import { SocialLinks } from "./social-links";
 import styles from "./site-footer.module.scss";
 
@@ -10,8 +9,6 @@ const footerLinks = [
   { label: "About Me", href: "/about" },
   { label: "Service", href: "/services" },
   { label: "Contact Me", href: "/contact" },
-  { label: "Blog Post", href: "/blog" },
-  { label: "Pricing", href: "/contact?subject=Pricing" },
 ] as const;
 
 export function SiteFooter() {
@@ -22,9 +19,15 @@ export function SiteFooter() {
           <div className={styles.introduction}>
             <Logo />
             <p className={styles.tagline}>
-              <strong>Get Ready</strong> To Create Great
+              <strong>Let’s Build</strong> Intelligent Solutions
             </p>
-            <NewsletterForm />
+            <p className={styles.profile}>
+              AI &amp; machine learning, full-stack development, and cloud
+              engineering by Eko Samuel.
+            </p>
+            <a className={styles.emailLink} href={`mailto:${sammy.contact.email}`}>
+              {sammy.contact.email} <Mail size={18} aria-hidden="true" />
+            </a>
           </div>
           <div className={styles.quickLinks}>
             <h2>Quick Link</h2>
@@ -43,19 +46,13 @@ export function SiteFooter() {
                 <span className={styles.contactIcon}>
                   <Mail size={16} />
                 </span>
-                <a href="mailto:example@gmail.com">example@gmail.com</a>
+                <a href={`mailto:${sammy.contact.email}`}>{sammy.contact.email}</a>
               </li>
               <li>
                 <span className={styles.contactIcon}>
                   <MapPin size={16} />
                 </span>
-                <span>3891 Ranchview Dr. Richardson</span>
-              </li>
-              <li>
-                <span className={styles.contactIcon}>
-                  <Phone size={16} />
-                </span>
-                <a href="tel:01245789321">01245789321</a>
+                <span>{sammy.contact.address}</span>
               </li>
             </ul>
             <SocialLinks />
@@ -65,17 +62,6 @@ export function SiteFooter() {
           <p>
             ©<Link href="/">{sammy.name}</Link> 2026 | All Rights Reserved
           </p>
-          <ul>
-            <li>
-              <Link href="/terms">Trams &amp; Condition</Link>
-            </li>
-            <li>
-              <Link href="/privacy">Privacy Policy</Link>
-            </li>
-            <li>
-              <Link href="/contact">Contact Us</Link>
-            </li>
-          </ul>
         </div>
       </div>
     </footer>

@@ -1,7 +1,4 @@
-import { projects } from "@/data/portfolio";
-import { sectionDescription } from "@/data/services";
-import { ProjectCard } from "@/components/portfolio/project-card";
-import { Reveal } from "@/components/ui/reveal";
+import { ProjectCollection } from "@/components/portfolio/project-collection";
 import { SectionHeading } from "@/components/ui/section-heading";
 import styles from "./latest-portfolio.module.scss";
 
@@ -19,21 +16,15 @@ export function LatestPortfolio({
       <div className="site-container">
         {showHeading ? (
           <SectionHeading
-            eyebrow="Latest Portfolio"
-            description={sectionDescription}
+            eyebrow="Projects & Professional Experience"
+            description="Explore my work in tax technology, telecommunications, and industry platforms. AI project details will follow."
             className={styles.heading}
           >
-            Transforming Ideas into
-            <br /> Exceptional
+            Engineering Work
+            <br /> with Measurable Outcomes
           </SectionHeading>
         ) : null}
-        <div className={styles.grid}>
-          {projects.map((project, index) => (
-            <Reveal key={project.slug} order={index + 1}>
-              <ProjectCard project={project} />
-            </Reveal>
-          ))}
-        </div>
+        <ProjectCollection />
       </div>
     </section>
   );

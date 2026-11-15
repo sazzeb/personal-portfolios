@@ -12,22 +12,14 @@ export const navigation: readonly NavigationLink[] = [
     ],
   },
   {
-    label: "Blog",
-    href: "/blog",
-    children: [
-      { label: "Blog Classic", href: "/blog" },
-      { label: "Blog Column 3", href: "/blog?layout=grid" },
-      { label: "Blog Details", href: "/blog/inspiring-the-world" },
-    ],
-  },
-  {
     label: "Project",
     href: "/projects",
     children: [
       { label: "Project", href: "/projects" },
-      { label: "Project Style 2", href: "/projects?layout=cards" },
-      { label: "Project Style 3", href: "/projects?layout=grid" },
-      { label: "Project Details", href: "/projects/digital-transformation" },
+      { label: "AI (Machine Learning)", href: "/projects/ai-machine-learning" },
+      { label: "ZandaTax", href: "/projects/zandatax" },
+      { label: "MTN", href: "/projects/mtn" },
+      { label: "NogicJQS", href: "/projects/nogicjqs" },
     ],
   },
   { label: "Contact", href: "/contact" },

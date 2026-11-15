@@ -3,10 +3,27 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import type { Project } from "@/types/portfolio";
 import { sammyImage } from "@/lib/assets";
+import { PlatformLink } from "./platform-link";
 import styles from "./project-card.module.scss";
 
 export function ProjectCard({ project }: { project: Project }) {
   const href = `/projects/${project.slug}`;
+
+  if (project.deferred) {
+    return (
+      <article className={styles.card}>
+        <div className={styles.imageFrame}>
+          <div className={styles.pending}>Details coming soon</div>
+        </div>
+        <div className={styles.content}>
+          <div>
+            <h3>{project.title}</h3>
+            <p>{project.category}</p>
+          </div>
+        </div>
+      </article>
+    );
+  }
 
   return (
     <article className={styles.card}>
@@ -18,9 +35,8 @@ export function ProjectCard({ project }: { project: Project }) {
         <div className={styles.imageClip}>
           <Image
             src={sammyImage(project.image)}
-            width={1939}
-            height={1572}
-            unoptimized
+            width={project.imageWidth ?? 1939}
+            height={project.imageHeight ?? 1572}
             alt={project.imageAlt}
             sizes="(max-width: 575px) 90vw, 45vw"
           />
@@ -50,6 +66,9 @@ export function ProjectCard({ project }: { project: Project }) {
           />
         </Link>
       </div>
+      {project.platform && project.platformLabel ? (
+        <PlatformLink href={project.platform} label={project.platformLabel} />
+      ) : null}
     </article>
   );
 }

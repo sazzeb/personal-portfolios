@@ -78,17 +78,17 @@ test("portfolio links open the corresponding project", async ({ page }) => {
   await page.goto("/projects");
   await page
     .getByRole("link", {
-      name: "View Digital Transformation Advisors",
+      name: "View ZandaTax (EnrolledAgent.com)",
       exact: true,
     })
     .click();
-  await expect(page).toHaveURL(/\/projects\/digital-transformation$/);
+  await expect(page).toHaveURL(/\/projects\/zandatax$/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
     "Project Details",
   );
   await expect(
     page.getByRole("heading", {
-      name: "Digital Transformation Advisors",
+      name: "ZandaTax (EnrolledAgent.com)",
       exact: true,
     }),
   ).toBeVisible();
@@ -118,7 +118,6 @@ test("contact fields validate required content and email format", async ({
     await form.evaluate((element: HTMLFormElement) => element.checkValidity()),
   ).toBe(false);
   await form.getByLabel("Your Name", { exact: true }).fill("Alex Designer");
-  await form.getByLabel("Phone Number", { exact: true }).fill("5551234567");
   await form.getByLabel("Your Email", { exact: true }).fill("invalid-address");
   await form
     .getByLabel("Your Message", { exact: true })

@@ -16,6 +16,8 @@ interface DetailLayoutProps {
   category: string;
   detailsTitle?: string;
   facts?: readonly { label: string; value: string }[];
+  sidebarAction?: ReactNode;
+  banner?: ReactNode;
   children: ReactNode;
 }
 
@@ -28,20 +30,24 @@ export function DetailLayout({
   category,
   detailsTitle = "Project Details",
   facts,
+  sidebarAction,
+  banner,
   children,
 }: DetailLayoutProps) {
   return (
     <section className="section-space-both">
       <div className="site-container">
         <Reveal variant="zoom" className={styles.heroImage}>
-          <Image
-            src={sammyImage(image)}
-            width={imageWidth}
-            height={imageHeight}
-            alt={imageAlt}
-            sizes="90vw"
-            preload
-          />
+          {banner ?? (
+            <Image
+              src={sammyImage(image)}
+              width={imageWidth}
+              height={imageHeight}
+              alt={imageAlt}
+              sizes="90vw"
+              preload
+            />
+          )}
         </Reveal>
         <div className={styles.grid}>
           <article className={styles.article}>
@@ -67,6 +73,7 @@ export function DetailLayout({
                   </div>
                 ))}
               </dl>
+              {sidebarAction}
               <ButtonLink href="/contact">Let’s Talk</ButtonLink>
             </GlowCard>
           </aside>

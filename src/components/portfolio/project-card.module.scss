@@ -1,5 +1,16 @@
 @use "../../styles/mixins" as *;
 
+.card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+
+  > a:last-child:not(.imageFrame) {
+    align-self: flex-start;
+    margin-top: auto;
+  }
+}
 .imageFrame {
   display: block;
   padding: 20px;
@@ -15,9 +26,15 @@
 .imageClip img {
   display: block;
   width: 100%;
-  aspect-ratio: 1939 / 1572;
-  object-fit: cover;
+  aspect-ratio: 16 / 10;
+  object-fit: contain;
   transition: transform 400ms ease;
+}
+.pending {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 10;
+  color: var(--color-text);
 }
 .card:hover .imageClip img {
   transform: scale(1.03);
@@ -31,6 +48,7 @@
   justify-content: space-between;
   gap: 20px;
   margin-top: 33px;
+  margin-bottom: 20px;
   h3 {
     @include heading(24px, 30px);
     a {

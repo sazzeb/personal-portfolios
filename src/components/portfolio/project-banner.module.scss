@@ -1,0 +1,87 @@
+.banner {
+  background: var(--color-surface);
+}
+.viewport {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  max-height: 650px;
+  overflow: hidden;
+  background: var(--color-background);
+}
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(1.015);
+  transition:
+    opacity 700ms ease,
+    transform 5000ms ease;
+  pointer-events: none;
+
+  &[data-active="true"] {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px;
+
+  button {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    color: var(--color-heading);
+    background: transparent;
+
+    &:hover {
+      color: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+  }
+}
+.dots {
+  display: flex;
+
+  button {
+    width: 28px;
+    height: 36px;
+    border: 0;
+
+    span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--color-text);
+    }
+
+    &[aria-pressed="true"] span {
+      background: var(--color-primary);
+    }
+  }
+}
+.count {
+  color: var(--color-text);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+@media (prefers-reduced-motion: reduce) {
+  .slide {
+    transform: none;
+    transition: none;
+  }
+}

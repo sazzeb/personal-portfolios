@@ -3,6 +3,7 @@
 import { Mail } from "lucide-react";
 import { useState } from "react";
 import type { FormEvent } from "react";
+import { sammy } from "@/config/sammy";
 import styles from "./site-footer.module.scss";
 
 export function NewsletterForm() {
@@ -15,7 +16,7 @@ export function NewsletterForm() {
       subject: "Newsletter subscription request",
       body: `Please send portfolio updates to ${email}.`,
     });
-    window.location.href = `mailto:example@info.com?${query}`;
+    window.location.href = `mailto:${sammy.contact.email}?${query}`;
     setStatus("Your email app will open with your subscription request.");
   }
 

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="480" viewBox="0 0 800 480">
+  <rect width="800" height="480" rx="24" fill="#10191d"/>
+  <g font-family="Arial,sans-serif">
+    <text x="48" y="58" fill="#22d3ee" font-size="16" letter-spacing="2">ILLUSTRATIVE RESULT PREVIEW</text>
+    <text x="48" y="104" fill="#fff" font-size="30" font-weight="700">Email Threat Classification</text>
+    <g font-size="17" fill="#d5e1e6">
+      <text x="200" y="153">Ham</text><text x="315" y="153">Spam</text><text x="425" y="153">Phishing</text><text x="555" y="153">Harmful</text>
+      <text x="60" y="204">Ham</text><text x="60" y="266">Spam</text><text x="60" y="328">Phishing</text><text x="60" y="390">Harmful</text>
+    </g>
+    <g stroke="#10191d" stroke-width="6">
+      <path d="M180 170H295V232H180Z" fill="#22d3ee"/><path d="M295 170H410V232H295Z" fill="#1b5865"/><path d="M410 170H525V232H410Z" fill="#163d48"/><path d="M525 170H640V232H525Z" fill="#1a4551"/>
+      <path d="M180 232H295V294H180Z" fill="#174956"/><path d="M295 232H410V294H295Z" fill="#18b9d1"/><path d="M410 232H525V294H410Z" fill="#226d7b"/><path d="M525 232H640V294H525Z" fill="#153a44"/>
+      <path d="M180 294H295V356H180Z" fill="#153a44"/><path d="M295 294H410V356H295Z" fill="#246371"/><path d="M410 294H525V356H410Z" fill="#3ac9de"/><path d="M525 294H640V356H525Z" fill="#205261"/>
+      <path d="M180 356H295V418H180Z" fill="#183c46"/><path d="M295 356H410V418H295Z" fill="#19444f"/><path d="M410 356H525V418H410Z" fill="#21616f"/><path d="M525 356H640V418H525Z" fill="#1fb5ce"/>
+    </g>
+    <text x="180" y="454" fill="#9aaeb8" font-size="16">Example confusion matrix · no measured scores</text>
+  </g>
+</svg>

@@ -1,5 +1,9 @@
 export const sammy = {
   name: "Eko Samuel",
+  contact: {
+    email: "info@ekosamuel.com",
+    address: "DWF Dallas TX",
+  },
   roles: [
     "AI (Machine Learning) Engineer",
     "Senior Software Engineer",

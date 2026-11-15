@@ -14,12 +14,13 @@ export function ContactSection() {
               align="left"
               className={styles.heading}
               description={
-                "ished fact that a reader will be distrol acted bioiiy desig " +
-                "ished fact that a reader will acted ished fact that a reader " +
-                "will be distrol acted"
+                "Connect with Eko Samuel to discuss AI and machine learning, " +
+                "full-stack applications, cloud infrastructure, or backend engineering. " +
+                "Share your goals, technical challenges, or collaboration ideas, " +
+                "and let’s explore how I can help."
               }
             >
-              Elevate your brand with Me
+              Let’s Build Intelligent, Reliable Software
             </SectionHeading>
             <ContactForm />
           </div>

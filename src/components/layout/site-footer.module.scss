@@ -53,6 +53,19 @@
     padding: 0;
   }
 }
+.profile {
+  max-width: 400px;
+  margin-top: 22px;
+  line-height: 1.8;
+}
+.emailLink {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+  color: var(--color-primary);
+}
 .newsletterStatus {
   max-width: 330px;
   font-size: 13px;

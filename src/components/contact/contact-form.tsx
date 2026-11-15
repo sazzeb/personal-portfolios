@@ -16,13 +16,6 @@ const fields = [
     required: true,
   },
   {
-    name: "phone",
-    label: "Phone Number",
-    type: "tel",
-    autoComplete: "tel",
-    required: true,
-  },
-  {
     name: "email",
     label: "Your Email",
     type: "email",
@@ -93,7 +86,7 @@ export function ContactForm({ compact = false }: ContactFormProps) {
         />
       </div>
       <Button type="submit" className={styles.submit}>
-        {compact ? "Send Message" : "Appointment Now"}
+        {compact ? "Send Message" : "What's On Your Mind"}
       </Button>
       <p className={styles.status} role="status">
         {status}

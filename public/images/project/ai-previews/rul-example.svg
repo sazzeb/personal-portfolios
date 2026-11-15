@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="480" viewBox="0 0 800 480">
+  <rect width="800" height="480" rx="24" fill="#10191d"/>
+  <g font-family="Arial,sans-serif">
+    <text x="48" y="58" fill="#22d3ee" font-size="16" letter-spacing="2">ILLUSTRATIVE RESULT PREVIEW</text>
+    <text x="48" y="104" fill="#fff" font-size="30" font-weight="700">Engine Remaining Useful Life</text>
+    <g stroke="#26383f" stroke-width="1">
+      <path d="M80 160H740M80 220H740M80 280H740M80 340H740"/>
+      <path d="M80 145V370H740" fill="none" stroke="#7c949e"/>
+    </g>
+    <path d="M85 175L170 174L245 183L320 208L400 240L475 265L550 300L630 329L730 358" fill="none" stroke="#9aaeb8" stroke-width="4" stroke-dasharray="8 8"/>
+    <path d="M85 181C190 170 225 180 295 203S420 243 475 271S635 326 730 351" fill="none" stroke="#22d3ee" stroke-width="5"/>
+    <text x="80" y="404" fill="#9aaeb8" font-size="17">Early cycles</text>
+    <text x="643" y="404" fill="#9aaeb8" font-size="17">Late cycles</text>
+    <path d="M80 440H110" stroke="#22d3ee" stroke-width="4"/>
+    <text x="122" y="446" fill="#d5e1e6" font-size="16">Example prediction</text>
+    <path d="M350 440H380" stroke="#9aaeb8" stroke-width="4" stroke-dasharray="7 5"/>
+    <text x="392" y="446" fill="#d5e1e6" font-size="16">Example reference</text>
+  </g>
+</svg>

@@ -1,35 +1,17 @@
 import type { Article, Project, Testimonial } from "@/types/portfolio";
 import { sammy } from "@/config/sammy";
+import { experienceProjects } from "@/data/project-experiences";
 
 export const projects: readonly Project[] = [
   {
-    slug: "digital-transformation",
-    title: "Digital Transformation Advisors",
-    category: "Development Coaches",
-    image: "latest-portfolio/portfoli-img-1.jpg",
-    imageAlt: "Editorial branding and stationery design in purple and black",
+    slug: "ai-machine-learning",
+    title: "AI (Machine Learning) Engineer Project",
+    category: "Personal Projects · Details Coming Soon",
+    image: "",
+    imageAlt: "",
+    deferred: true,
   },
-  {
-    slug: "thoughtful-design",
-    title: "My work is driven by the belief that thoughtful.",
-    category: "Development App",
-    image: "latest-portfolio/portfoli-img-2.jpg",
-    imageAlt: "Minimal product packaging and brand identity presentation",
-  },
-  {
-    slug: "curated-selection",
-    title: "In this portfolio, you’ll find a curated selection",
-    category: "Web Design",
-    image: "latest-portfolio/portfoli-img-3.jpg",
-    imageAlt: "Creative digital design and visual identity project",
-  },
-  {
-    slug: "creative-collaboration",
-    title: "I’ve had the privilege of working with various",
-    category: "App Development",
-    image: "latest-portfolio/portfoli-img-4.jpg",
-    imageAlt: "Art direction and brand design project presentation",
-  },
+  ...experienceProjects,
 ];
 
 export const articles: readonly Article[] = [

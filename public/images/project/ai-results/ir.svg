@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="560" viewBox="0 0 1000 560">
+  <rect width="1000" height="560" rx="20" fill="#10191d"/>
+  <g font-family="monospace" font-size="22" fill="#d5e1e6">
+    <text x="40" y="55" fill="#22d3ee">INVERTED INDEX · REPOSITORY OUTPUT</text>
+    <text x="40" y="100" font-size="17">term ID → document ID : term frequency</text>
+    <text x="40" y="165">1: 245: 1; 710: 2; 1456: 2; 4288: 1; 5120: 2;</text>
+    <text x="40" y="210">2: 710: 1; 2220: 1;</text>
+    <text x="40" y="255">3: 780: 2; 4943: 1; 5032: 1;</text>
+    <text x="40" y="300">4: 351: 2; 4225: 1;</text>
+    <text x="40" y="345">5: 1751: 1;</text>
+    <text x="40" y="390">6: 4970: 2;</text>
+    <text x="40" y="435">7: 4308: 1; 4454: 1;</text>
+    <text x="40" y="480">8: 1402: 1; 2986: 2;</text>
+  </g>
+</svg>

@@ -8,7 +8,7 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 from uuid import uuid4
 
-from server.app import create_app
+from server.app import app, create_app
 from server.database import connect
 from server.models import ContactError, ContactMessage
 from server.mailer import forward_message
@@ -40,6 +40,14 @@ class ContactTests(unittest.TestCase):
             return connection.execute("SELECT COUNT(*) FROM contact_messages").fetchone()[0]
         finally:
             connection.close()
+
+    def test_deployment_entrypoint_delegates_to_configured_wsgi_app(self):
+        application = MagicMock(return_value=[b"ok"])
+        start_response = MagicMock()
+        with patch("server.app._configured_application", return_value=application):
+            result = app({"PATH_INFO": "/health"}, start_response)
+        self.assertEqual(result, [b"ok"])
+        application.assert_called_once_with({"PATH_INFO": "/health"}, start_response)
 
     @patch("server.service.forward_message")
     def test_forward_happens_before_insert_and_success_is_persisted(self, forward):

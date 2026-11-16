@@ -3,12 +3,19 @@
 import hmac
 import json
 import logging
+import sys
+from functools import lru_cache
 from http import HTTPStatus
+from pathlib import Path
 from uuid import UUID
 
-from .models import ContactError, ContactMessage
-from .service import ContactService
-from .settings import Settings
+# Deployment platforms may import app.py directly with server/ as their root.
+if not __package__:
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from server.models import ContactError, ContactMessage
+from server.service import ContactService
+from server.settings import Settings
 
 MAX_BODY_BYTES = 32768
 logger = logging.getLogger(__name__)
@@ -67,3 +74,14 @@ def create_app(settings=None):
         return [body]
 
     return application
+
+
+@lru_cache(maxsize=1)
+def _configured_application():
+    """Defer credential loading until runtime, rather than during build discovery."""
+    return create_app()
+
+
+def app(environ, start_response):
+    """WSGI entry point recognized by Vercel and other Python hosts."""
+    return _configured_application()(environ, start_response)

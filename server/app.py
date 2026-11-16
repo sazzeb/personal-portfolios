@@ -82,6 +82,10 @@ def _configured_application():
     return create_app()
 
 
-def app(environ, start_response):
+def application(environ, start_response):
     """WSGI entry point recognized by Vercel and other Python hosts."""
     return _configured_application()(environ, start_response)
+
+
+# Explicit module-level assignment for deployment entry-point discovery.
+app = application

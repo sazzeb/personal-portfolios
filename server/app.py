@@ -7,15 +7,20 @@ import sys
 from functools import lru_cache
 from http import HTTPStatus
 from pathlib import Path
+from types import ModuleType
 from uuid import UUID
 
-# Deployment platforms may import app.py directly with server/ as their root.
+# A backend-only deployment has no enclosing `server` directory. Use a
+# private package namespace so relative imports work in either layout.
 if not __package__:
-    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+    __package__ = "_sammy_contact"
+    package = ModuleType(__package__)
+    package.__path__ = [str(Path(__file__).resolve().parent)]
+    sys.modules.setdefault(__package__, package)
 
-from server.models import ContactError, ContactMessage
-from server.service import ContactService
-from server.settings import Settings
+from .models import ContactError, ContactMessage
+from .service import ContactService
+from .settings import Settings
 
 MAX_BODY_BYTES = 32768
 logger = logging.getLogger(__name__)
@@ -30,7 +35,7 @@ def create_app(settings=None):
         try:
             path = environ.get("PATH_INFO", "")
             method = environ.get("REQUEST_METHOD", "GET")
-            if path == "/health" and method == "GET":
+            if path in {"/", "/health"} and method == "GET":
                 payload = {"status": "ok"}
             elif path != "/api/contact":
                 raise ContactError(404, "Endpoint not found.")
@@ -84,7 +89,22 @@ def _configured_application():
 
 def application(environ, start_response):
     """WSGI entry point recognized by Vercel and other Python hosts."""
-    return _configured_application()(environ, start_response)
+    try:
+        configured = _configured_application()
+    except (ValueError, OSError):
+        logger.exception("Contact service configuration failed")
+        body = json.dumps({
+            "success": False,
+            "message": "The contact service is temporarily unavailable. Please try again later.",
+            "code": "configuration_error",
+        }).encode("utf-8")
+        start_response("503 Service Unavailable", [
+            ("Content-Type", "application/json; charset=utf-8"),
+            ("Content-Length", str(len(body))),
+            ("Cache-Control", "no-store"),
+        ])
+        return [body]
+    return configured(environ, start_response)
 
 
 # Explicit module-level assignment for deployment entry-point discovery.

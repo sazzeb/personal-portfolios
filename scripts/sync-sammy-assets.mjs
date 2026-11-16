@@ -21,7 +21,6 @@ const imagePaths = [
   "testimonial/testimonial-icon.svg",
   "testimonial/bg-image-1png.png",
   "testimonial/bg-image-2.png",
-  ...Array.from({ length: 3 }, (_, index) => `blog/blog-img-${index + 1}.jpg`),
 ];
 
 const fonts = [

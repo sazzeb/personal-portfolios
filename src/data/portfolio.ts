@@ -1,4 +1,4 @@
-import type { Article, Project, Testimonial } from "@/types/portfolio";
+import type { Project, Testimonial } from "@/types/portfolio";
 import { sammy } from "@/config/sammy";
 import { experienceProjects } from "@/data/project-experiences";
 
@@ -12,33 +12,6 @@ export const projects: readonly Project[] = [
     deferred: true,
   },
   ...experienceProjects,
-];
-
-export const articles: readonly Article[] = [
-  {
-    slug: "inspiring-the-world",
-    title: "Inspiring the World, One Project at a Time for the man",
-    image: "blog/blog-img-1.jpg",
-    imageAlt: "Creative professionals collaborating on a design project",
-    author: "Mesbah",
-    date: "April 10",
-  },
-  {
-    slug: "bring-your-ideas-to-life",
-    title: "Let’s bring your ideas to life! Contact me, and let’s",
-    image: "blog/blog-img-2.jpg",
-    imageAlt: "Design team discussing ideas in a creative studio",
-    author: "Mesbah",
-    date: "April 10",
-  },
-  {
-    slug: "approach-and-dedication",
-    title: "Each one showcases my approach and dedication man",
-    image: "blog/blog-img-3.jpg",
-    imageAlt: "A designer working on a digital creative project",
-    author: "Mesbah",
-    date: "April 10",
-  },
 ];
 
 // Professional highlights based on the supplied CV, rather than client endorsements.

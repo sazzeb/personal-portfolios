@@ -9,7 +9,6 @@ import { LatestPortfolio } from "@/components/sections/latest-portfolio";
 import { Expertise } from "@/components/sections/expertise";
 import { TestimonialsSection } from "@/components/sections/testimonials-section";
 import { ContactSection } from "@/components/sections/contact-section";
-import { BlogSection } from "@/components/sections/blog-section";
 
 export default function HomePage() {
   return (
@@ -25,7 +24,6 @@ export default function HomePage() {
       <Expertise />
       <TestimonialsSection />
       <ContactSection />
-      <BlogSection />
     </main>
   );
 }

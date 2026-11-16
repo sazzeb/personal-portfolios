@@ -27,15 +27,6 @@ export interface Project {
   platformLabel?: string;
 }
 
-export interface Article {
-  slug: string;
-  title: string;
-  image: string;
-  imageAlt: string;
-  author: string;
-  date: string;
-}
-
 export interface Skill {
   label: string;
   detail: string;

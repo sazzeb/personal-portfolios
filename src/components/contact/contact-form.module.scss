@@ -47,6 +47,10 @@
 .status {
   grid-column: 1 / -1;
 }
+.submit:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
 .status {
   font-size: 13px;
   line-height: 1.7;

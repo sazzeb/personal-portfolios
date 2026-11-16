@@ -1,8 +1,7 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 import type { FormEvent } from "react";
-import { createEmailDraft } from "@/lib/contact";
 import { Button } from "@/components/ui/button";
 import { classNames } from "@/lib/class-names";
 import styles from "./contact-form.module.scss";
@@ -38,14 +37,65 @@ interface ContactFormProps {
 export function ContactForm({ compact = false }: ContactFormProps) {
   const formId = useId();
   const [status, setStatus] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [received, setReceived] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const pending = useRef<{ payload: string; identifier: string } | null>(null);
+  const inFlight = useRef(false);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    window.location.href = createEmailDraft(formData);
-    setStatus(
-      "Your email app will open with your message. Send it there to complete your request.",
-    );
+    if (inFlight.current || received) return;
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const payload = JSON.stringify({
+      name: String(formData.get("name") ?? "").trim(),
+      email: String(formData.get("email") ?? "").trim(),
+      subject: String(formData.get("subject") ?? "").trim(),
+      message: String(formData.get("message") ?? "").trim(),
+    });
+    inFlight.current = true;
+    setSubmitting(true);
+    setHasError(false);
+    setStatus("");
+    try {
+      if (pending.current?.payload !== payload) {
+        pending.current = { payload, identifier: crypto.randomUUID() };
+      }
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Idempotency-Key": pending.current.identifier,
+        },
+        body: payload,
+        signal: AbortSignal.timeout(45_000),
+      });
+      const result = await response.json();
+      if (!response.ok || result.success !== true) {
+        if (result.code === "forwarded_not_stored") setReceived(true);
+        throw new Error(
+          typeof result.message === "string"
+            ? result.message
+            : "Your message could not be sent. Please try again later.",
+        );
+      }
+      form.reset();
+      pending.current = null;
+      setStatus("Your thought has been sent, Eko Samuel will reach out to you");
+    } catch (error) {
+      setHasError(true);
+      setStatus(
+        error instanceof Error &&
+          error.name !== "TimeoutError" &&
+          error.name !== "TypeError"
+          ? error.message
+          : "We could not confirm your submission. Please try again shortly.",
+      );
+    } finally {
+      inFlight.current = false;
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -53,6 +103,7 @@ export function ContactForm({ compact = false }: ContactFormProps) {
       className={classNames(styles.form, compact && styles.compact)}
       onSubmit={handleSubmit}
       aria-label={compact ? "Chat enquiry" : "Project enquiry"}
+      aria-busy={submitting}
     >
       {fields
         .filter(({ name }) => !compact || name === "name" || name === "email")
@@ -68,6 +119,7 @@ export function ContactForm({ compact = false }: ContactFormProps) {
               type={type}
               autoComplete={autoComplete}
               required={required}
+              disabled={submitting || received}
               maxLength={200}
             />
           </div>
@@ -81,14 +133,23 @@ export function ContactForm({ compact = false }: ContactFormProps) {
           name="message"
           placeholder="Your Message"
           required
+          disabled={submitting || received}
           maxLength={5000}
           rows={5}
         />
       </div>
-      <Button type="submit" className={styles.submit}>
-        {compact ? "Send Message" : "What's On Your Mind"}
+      <Button
+        type="submit"
+        className={styles.submit}
+        disabled={submitting || received}
+      >
+        {submitting
+          ? "Sending…"
+          : compact
+            ? "Send Message"
+            : "What's On Your Mind"}
       </Button>
-      <p className={styles.status} role="status">
+      <p className={styles.status} role={hasError ? "alert" : "status"}>
         {status}
       </p>
     </form>

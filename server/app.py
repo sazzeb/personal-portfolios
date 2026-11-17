@@ -21,6 +21,7 @@ if not __package__:
 from .models import ContactError, ContactMessage
 from .service import ContactService
 from .settings import Settings
+from .access_view import is_browser_navigation, warning_response
 
 MAX_BODY_BYTES = 32768
 logger = logging.getLogger(__name__)
@@ -31,6 +32,8 @@ def create_app(settings=None):
     service = ContactService(configuration)
 
     def application(environ, start_response):
+        if is_browser_navigation(environ):
+            return warning_response(environ, start_response)
         status = 200
         try:
             path = environ.get("PATH_INFO", "")
@@ -89,6 +92,8 @@ def _configured_application():
 
 def application(environ, start_response):
     """WSGI entry point recognized by Vercel and other Python hosts."""
+    if is_browser_navigation(environ):
+        return warning_response(environ, start_response)
     try:
         configured = _configured_application()
     except (ValueError, OSError):

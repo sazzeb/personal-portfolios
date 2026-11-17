@@ -2,6 +2,7 @@
 
 import logging
 import smtplib
+import ssl
 import psycopg
 from datetime import datetime, timezone
 
@@ -54,8 +55,22 @@ class ContactService:
             connection.commit()
             return {"success": True, "message": SUCCESS_MESSAGE}
         except (smtplib.SMTPException, OSError) as error:
-            logger.warning("Contact forwarding failed: %s", type(error).__name__)
-            raise ContactError(502, "Your message could not be sent. Please try again later.") from error
+            if isinstance(error, smtplib.SMTPAuthenticationError):
+                code = "smtp_authentication_failed"
+            elif isinstance(error, TimeoutError):
+                code = "smtp_timeout"
+            elif isinstance(error, ssl.SSLError):
+                code = "smtp_tls_failed"
+            else:
+                code = "smtp_unavailable"
+            logger.warning(
+                "Contact forwarding failed: %s code=%s smtp_status=%s errno=%s",
+                type(error).__name__, code, getattr(error, "smtp_code", None),
+                getattr(error, "errno", None),
+            )
+            raise ContactError(
+                502, "Your message could not be sent. Please try again later.", code,
+            ) from error
         except psycopg.Error as error:
             logger.error("Contact storage failed after_forward=%s error_type=%s sqlstate=%s",
                          forwarded, type(error).__name__, error.sqlstate)

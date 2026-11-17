@@ -79,6 +79,20 @@ class ContactTests(unittest.TestCase):
         self.assertEqual(self.inserts(), [])
         self.connection.commit.assert_not_called()
 
+    def test_smtp_diagnostics_do_not_expose_provider_response_or_credentials(self):
+        cases = (
+            (smtplib.SMTPAuthenticationError(535, b"private provider response"), "smtp_authentication_failed"),
+            (TimeoutError("private connection detail"), "smtp_timeout"),
+        )
+        for error, code in cases:
+            with self.subTest(code=code):
+                with patch("server.service.forward_message", side_effect=error):
+                    response = self.request()
+                self.assertEqual(response["status"], 502)
+                self.assertEqual(response["body"]["code"], code)
+                self.assertNotIn("private", json.dumps(response["body"]))
+                self.connection.commit.assert_not_called()
+
     @patch("server.service.forward_message")
     def test_retry_after_success_does_not_send_twice(self, forward):
         self.service.submit(self.message, self.request_id)

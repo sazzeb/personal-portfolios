@@ -50,7 +50,7 @@ border:1px solid #6be4f333;animation:breathe 4s ease-in-out infinite}
 .count{font:24px ui-monospace,monospace;color:#e8fbff;white-space:nowrap}
 .track{margin-top:16px;height:3px;border-radius:9px;background:#ffffff0b;overflow:hidden}
 .progress{height:100%;width:100%;background:linear-gradient(90deg,#34d4ee,#ffbc74);
-transform-origin:left;animation:countdown 15s linear forwards}
+transform-origin:left;animation:countdown 60s linear forwards}
 .bottomline{font-size:9px;line-height:1.7}.closed{text-align:center;max-width:620px}
 .closed p{color:#a7bbc4;line-height:1.8}.closed h1{margin:20px auto}
 [hidden]{display:none!important}body[data-expired] *{animation:none!important}
@@ -71,7 +71,7 @@ transform-origin:left;animation:countdown 15s linear forwards}
 
 SCRIPT = """
 (() => {
-  const duration = 15;
+  const duration = 60;
   const deadline = performance.now() + duration * 1000;
   const counter = document.getElementById('count');
   const expire = () => {
@@ -114,8 +114,8 @@ HTML = """<!doctype html>
       <span class="code">403 / ACCESS RESTRICTED</span></div>
     </div></div><div class="divider"></div>
     <div class="timer-row"><span class="timer-label">Automatic view closure in</span>
-      <span class="count" id="count" aria-hidden="true">15 s</span></div>
-    <p class="sr-notice" hidden>This view closes after 15 seconds.</p>
+      <span class="count" id="count" aria-hidden="true">60 s</span></div>
+    <p class="sr-notice" hidden>This view closes after 60 seconds.</p>
     <div class="track" aria-hidden="true"><div class="progress"></div></div>
     <noscript><p class="notice">Automatic closure requires JavaScript. This remains a restricted page.</p></noscript>
   </section><footer class="bottomline"><span>Private service / Eko Samuel</span>

@@ -1,15 +1,12 @@
 import io
 import json
 import smtplib
-import sqlite3
-import tempfile
+import psycopg
 import unittest
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 from uuid import uuid4
 
 from server.app import app, create_app
-from server.database import connect
 from server.models import ContactError, ContactMessage
 from server.mailer import forward_message
 from server.service import ContactService, SUCCESS_MESSAGE
@@ -18,10 +15,8 @@ from server.settings import Settings
 
 class ContactTests(unittest.TestCase):
     def setUp(self):
-        self.directory = tempfile.TemporaryDirectory()
-        self.addCleanup(self.directory.cleanup)
         self.settings = Settings(
-            database_path=Path(self.directory.name) / "messages.sqlite3",
+            database_url="postgresql://test:test@example.test/neondb?sslmode=require",
             api_key="test-secret-" * 4,
             smtp_host="smtp.example.test",
             smtp_port=587,
@@ -33,13 +28,24 @@ class ContactTests(unittest.TestCase):
         self.message = ContactMessage.parse(self.payload)
         self.service = ContactService(self.settings)
         self.request_id = str(uuid4())
+        self.connection = MagicMock()
+        self.existing = None
+        self.recent_count = 0
+        def execute(statement, *args):
+            cursor = MagicMock()
+            if "SELECT fingerprint" in statement:
+                cursor.fetchone.return_value = self.existing
+            elif "SELECT COUNT" in statement:
+                cursor.fetchone.return_value = {"count": self.recent_count}
+            return cursor
+        self.connection.execute.side_effect = execute
+        self.connect_patch = patch("server.service.connect", return_value=self.connection)
+        self.connect_mock = self.connect_patch.start()
+        self.addCleanup(self.connect_patch.stop)
 
-    def count_messages(self):
-        connection = connect(self.settings.database_path)
-        try:
-            return connection.execute("SELECT COUNT(*) FROM contact_messages").fetchone()[0]
-        finally:
-            connection.close()
+    def inserts(self):
+        return [call for call in self.connection.execute.call_args_list
+                if call.args[0].startswith("INSERT")]
 
     def test_deployment_entrypoint_delegates_to_configured_wsgi_app(self):
         application = MagicMock(return_value=[b"ok"])
@@ -52,34 +58,39 @@ class ContactTests(unittest.TestCase):
     @patch("server.service.forward_message")
     def test_forward_happens_before_insert_and_success_is_persisted(self, forward):
         def verify_order(*args):
-            self.assertEqual(self.count_messages(), 0)
+            self.assertEqual(self.inserts(), [])
+            self.connection.commit.assert_not_called()
         forward.side_effect = verify_order
         result = self.service.submit(self.message, self.request_id)
         self.assertEqual(result, {"success": True, "message": SUCCESS_MESSAGE})
-        self.assertEqual(self.count_messages(), 1)
-        connection = connect(self.settings.database_path)
-        self.addCleanup(connection.close)
-        row = connection.execute("SELECT * FROM contact_messages").fetchone()
-        self.assertEqual(row["message"], self.message.message)
-        self.assertTrue(row["forwarded_at"])
+        self.assertEqual(len(self.inserts()), 1)
+        self.assertEqual(self.inserts()[0].args[1][5], self.message.message)
+        self.connection.commit.assert_called_once()
+        self.connection.close.assert_called_once()
+        locks = [call.args[1][0] for call in self.connection.execute.call_args_list
+                 if "pg_advisory_xact_lock" in call.args[0]]
+        self.assertEqual(locks, ["request:" + self.request_id, "email:" + self.message.email])
 
     @patch("server.service.forward_message", side_effect=smtplib.SMTPException("Rejected"))
     def test_mail_failure_does_not_save_or_report_success(self, forward):
         with self.assertRaises(ContactError) as failure:
             self.service.submit(self.message, self.request_id)
         self.assertEqual(failure.exception.status, 502)
-        self.assertEqual(self.count_messages(), 0)
+        self.assertEqual(self.inserts(), [])
+        self.connection.commit.assert_not_called()
 
     @patch("server.service.forward_message")
     def test_retry_after_success_does_not_send_twice(self, forward):
         self.service.submit(self.message, self.request_id)
+        self.existing = {"fingerprint": self.message.fingerprint()}
         self.service.submit(self.message, self.request_id)
         forward.assert_called_once()
-        self.assertEqual(self.count_messages(), 1)
+        self.assertEqual(len(self.inserts()), 1)
 
     @patch("server.service.forward_message")
     def test_reused_identifier_with_changed_message_is_rejected(self, forward):
         self.service.submit(self.message, self.request_id)
+        self.existing = {"fingerprint": self.message.fingerprint()}
         changed = ContactMessage.parse({**self.payload, "message": "Different content"})
         with self.assertRaises(ContactError) as failure:
             self.service.submit(changed, self.request_id)
@@ -88,19 +99,35 @@ class ContactTests(unittest.TestCase):
 
     @patch("server.service.forward_message")
     def test_storage_failure_after_forward_does_not_claim_complete_success(self, forward):
-        connection = connect(self.settings.database_path)
-        wrapped = MagicMock(wraps=connection)
+        execute_before = self.connection.execute.side_effect
         def execute(statement, *args):
             if statement.startswith("INSERT"):
-                raise sqlite3.OperationalError("Simulated disk failure")
-            return connection.execute(statement, *args)
-        wrapped.execute.side_effect = execute
-        with patch("server.service.connect", return_value=wrapped):
-            with self.assertRaises(ContactError) as failure:
-                self.service.submit(self.message, self.request_id)
+                raise psycopg.OperationalError("Simulated database failure")
+            return execute_before(statement, *args)
+        self.connection.execute.side_effect = execute
+        with self.assertRaises(ContactError) as failure:
+            self.service.submit(self.message, self.request_id)
         self.assertEqual(failure.exception.code, "forwarded_not_stored")
         forward.assert_called_once()
-        self.assertEqual(self.count_messages(), 0)
+        self.connection.commit.assert_not_called()
+        self.connection.close.assert_called_once()
+
+    @patch("server.service.forward_message")
+    def test_database_failure_before_forward_never_sends_email(self, forward):
+        self.connect_mock.side_effect = psycopg.OperationalError("Unavailable")
+        with self.assertRaises(ContactError) as failure:
+            self.service.submit(self.message, self.request_id)
+        self.assertEqual(failure.exception.status, 503)
+        forward.assert_not_called()
+
+    @patch("server.service.forward_message")
+    def test_commit_failure_after_forward_never_reports_success(self, forward):
+        self.connection.commit.side_effect = psycopg.OperationalError("Connection lost")
+        with self.assertRaises(ContactError) as failure:
+            self.service.submit(self.message, self.request_id)
+        self.assertEqual(failure.exception.code, "forwarded_not_stored")
+        forward.assert_called_once()
+        self.connection.close.assert_called_once()
 
     def test_validation_rejects_headers_bad_email_and_blank_messages(self):
         for change in [{"name": "Alex\nBcc: someone"}, {"email": "bad"}, {"message": "  "}, {"message": "x" * 5001}]:
@@ -150,12 +177,11 @@ class ContactTests(unittest.TestCase):
 
     @patch("server.service.forward_message")
     def test_rate_limit_after_five_successful_submissions(self, forward):
-        for _ in range(5):
-            self.service.submit(self.message, str(uuid4()))
+        self.recent_count = 5
         with self.assertRaises(ContactError) as failure:
             self.service.submit(self.message, str(uuid4()))
         self.assertEqual(failure.exception.status, 429)
-        self.assertEqual(forward.call_count, 5)
+        forward.assert_not_called()
 
 
 if __name__ == "__main__":

@@ -1,9 +1,10 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useId, useRef, useState, useSyncExternalStore } from "react";
 import type { FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { classNames } from "@/lib/class-names";
+import { ContactSuccessDialog } from "./contact-success-dialog";
 import styles from "./contact-form.module.scss";
 
 const fields = [
@@ -34,12 +35,22 @@ interface ContactFormProps {
   compact?: boolean;
 }
 
+function subscribeToHydration() {
+  return () => {};
+}
+
 export function ContactForm({ compact = false }: ContactFormProps) {
   const formId = useId();
+  const hydrated = useSyncExternalStore(
+    subscribeToHydration,
+    () => true,
+    () => false,
+  );
   const [status, setStatus] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [received, setReceived] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const pending = useRef<{ payload: string; identifier: string } | null>(null);
   const inFlight = useRef(false);
 
@@ -83,6 +94,7 @@ export function ContactForm({ compact = false }: ContactFormProps) {
       form.reset();
       pending.current = null;
       setStatus("Your thought has been sent, Eko Samuel will reach out to you");
+      setShowSuccess(true);
     } catch (error) {
       setHasError(true);
       setStatus(
@@ -99,59 +111,65 @@ export function ContactForm({ compact = false }: ContactFormProps) {
   }
 
   return (
-    <form
-      className={classNames(styles.form, compact && styles.compact)}
-      onSubmit={handleSubmit}
-      aria-label={compact ? "Chat enquiry" : "Project enquiry"}
-      aria-busy={submitting}
-    >
-      {fields
-        .filter(({ name }) => !compact || name === "name" || name === "email")
-        .map(({ name, label, type, autoComplete, required }) => (
-          <div className={styles.field} key={name}>
-            <label className="sr-only" htmlFor={`${formId}-${name}`}>
-              {label}
-            </label>
-            <input
-              id={`${formId}-${name}`}
-              name={name}
-              placeholder={label}
-              type={type}
-              autoComplete={autoComplete}
-              required={required}
-              disabled={submitting || received}
-              maxLength={200}
-            />
-          </div>
-        ))}
-      <div className={styles.message}>
-        <label className="sr-only" htmlFor={`${formId}-message`}>
-          Your Message
-        </label>
-        <textarea
-          id={`${formId}-message`}
-          name="message"
-          placeholder="Your Message"
-          required
-          disabled={submitting || received}
-          maxLength={5000}
-          rows={5}
-        />
-      </div>
-      <Button
-        type="submit"
-        className={styles.submit}
-        disabled={submitting || received}
+    <>
+      <form
+        className={classNames(styles.form, compact && styles.compact)}
+        onSubmit={handleSubmit}
+        aria-label={compact ? "Chat enquiry" : "Project enquiry"}
+        aria-busy={submitting}
       >
-        {submitting
-          ? "Sending…"
-          : compact
-            ? "Send Message"
-            : "What's On Your Mind"}
-      </Button>
-      <p className={styles.status} role={hasError ? "alert" : "status"}>
-        {status}
-      </p>
-    </form>
+        {fields
+          .filter(({ name }) => !compact || name === "name" || name === "email")
+          .map(({ name, label, type, autoComplete, required }) => (
+            <div className={styles.field} key={name}>
+              <label className="sr-only" htmlFor={`${formId}-${name}`}>
+                {label}
+              </label>
+              <input
+                id={`${formId}-${name}`}
+                name={name}
+                placeholder={label}
+                type={type}
+                autoComplete={autoComplete}
+                required={required}
+                disabled={!hydrated || submitting || received}
+                maxLength={200}
+              />
+            </div>
+          ))}
+        <div className={styles.message}>
+          <label className="sr-only" htmlFor={`${formId}-message`}>
+            Your Message
+          </label>
+          <textarea
+            id={`${formId}-message`}
+            name="message"
+            placeholder="Your Message"
+            required
+            disabled={!hydrated || submitting || received}
+            maxLength={5000}
+            rows={5}
+          />
+        </div>
+        <Button
+          type="submit"
+          className={styles.submit}
+          disabled={!hydrated || submitting || received}
+        >
+          {submitting
+            ? "Sending…"
+            : compact
+              ? "Send Message"
+              : "What's On Your Mind"}
+        </Button>
+        <p className={styles.status} role={hasError ? "alert" : "status"}>
+          {status}
+        </p>
+      </form>
+      <ContactSuccessDialog
+        open={showSuccess}
+        onClose={() => setShowSuccess(false)}
+      />
+    </>
   );
 }

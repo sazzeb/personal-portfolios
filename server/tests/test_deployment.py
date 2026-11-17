@@ -22,6 +22,7 @@ class DeploymentTests(unittest.TestCase):
             environment = {
                 **os.environ,
                 "CONTACT_API_KEY": "test-only-" * 4,
+                "DATABASE_URL": "postgresql://test:test@host.test/neondb?sslmode=require",
                 "SMTP_HOST": "smtp.example.test",
                 "SMTP_USERNAME": "test",
                 "SMTP_PASSWORD": "test-only",

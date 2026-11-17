@@ -2,7 +2,7 @@
 
 import logging
 import smtplib
-import sqlite3
+import psycopg
 from datetime import datetime, timezone
 
 from .database import connect
@@ -22,38 +22,43 @@ class ContactService:
         forwarded = False
         connection = None
         try:
-            connection = connect(self.settings.database_path)
-            # Reserve the writer so concurrent retries cannot send the same request twice.
-            connection.execute("BEGIN IMMEDIATE")
+            connection = connect(self.settings.database_url)
+            connection.execute("SET LOCAL lock_timeout = '10s'")
+            # Transaction locks work with Neon's transaction-mode pooler.
+            for lock_key in ("request:" + request_id, "email:" + message.email.lower()):
+                connection.execute(
+                    "SELECT pg_advisory_xact_lock(hashtextextended(%s, 0))", (lock_key,)
+                )
             existing = connection.execute(
-                "SELECT fingerprint FROM contact_messages WHERE id = ?", (request_id,)
+                "SELECT fingerprint FROM contact_messages WHERE id = %s", (request_id,)
             ).fetchone()
             if existing:
                 if existing["fingerprint"] != message.fingerprint():
                     raise ContactError(409, "Please submit the updated message again.", "id_conflict")
                 return {"success": True, "message": SUCCESS_MESSAGE}
             recent = connection.execute(
-                "SELECT COUNT(*) FROM contact_messages WHERE lower(email) = lower(?) "
-                "AND created_at >= strftime('%Y-%m-%dT%H:%M:%fZ', 'now', '-10 minutes')",
+                "SELECT COUNT(*) AS count FROM contact_messages WHERE lower(email) = lower(%s) "
+                "AND created_at >= CURRENT_TIMESTAMP - INTERVAL '10 minutes'",
                 (message.email,),
-            ).fetchone()[0]
+            ).fetchone()["count"]
             if recent >= 5:
                 raise ContactError(429, "Please wait a few minutes before sending another message.")
             forward_message(message, request_id, self.settings)
             forwarded = True
             connection.execute(
                 "INSERT INTO contact_messages "
-                "(id, fingerprint, name, email, subject, message, forwarded_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                "(id, fingerprint, name, email, subject, message, forwarded_at) VALUES (%s, %s, %s, %s, %s, %s, %s)",
                 (request_id, message.fingerprint(), message.name, message.email,
-                 message.subject, message.message, datetime.now(timezone.utc).isoformat()),
+                 message.subject, message.message, datetime.now(timezone.utc)),
             )
             connection.commit()
             return {"success": True, "message": SUCCESS_MESSAGE}
         except (smtplib.SMTPException, OSError) as error:
             logger.warning("Contact forwarding failed: %s", type(error).__name__)
             raise ContactError(502, "Your message could not be sent. Please try again later.") from error
-        except sqlite3.Error as error:
-            logger.error("Contact storage failed after_forward=%s", forwarded)
+        except psycopg.Error as error:
+            logger.error("Contact storage failed after_forward=%s error_type=%s sqlstate=%s",
+                         forwarded, type(error).__name__, error.sqlstate)
             if forwarded:
                 raise ContactError(
                     503,

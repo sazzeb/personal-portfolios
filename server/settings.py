@@ -3,6 +3,7 @@
 import os
 from dataclasses import dataclass
 from pathlib import Path
+from urllib.parse import parse_qs, urlsplit
 from dotenv import load_dotenv
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -15,7 +16,7 @@ def load_root_environment() -> None:
 
 @dataclass(frozen=True)
 class Settings:
-    database_path: Path
+    database_url: str
     api_key: str
     smtp_host: str
     smtp_port: int
@@ -28,10 +29,22 @@ class Settings:
     @classmethod
     def from_environment(cls) -> "Settings":
         load_root_environment()
-        required = ["CONTACT_API_KEY", "SMTP_HOST", "SMTP_USERNAME", "SMTP_PASSWORD", "SMTP_FROM"]
+        required = ["DATABASE_URL", "CONTACT_API_KEY", "SMTP_HOST", "SMTP_USERNAME", "SMTP_PASSWORD", "SMTP_FROM"]
         missing = [key for key in required if not os.environ.get(key)]
         if missing:
             raise ValueError("Missing server configuration: " + ", ".join(missing))
+        database_url = os.environ["DATABASE_URL"].strip()
+        try:
+            database = urlsplit(database_url)
+            valid_database = (database.scheme in {"postgres", "postgresql"}
+                              and database.hostname and database.path.strip("/"))
+        except ValueError:
+            valid_database = False
+        if not valid_database:
+            raise ValueError("DATABASE_URL must be a PostgreSQL connection URL")
+        sslmode = parse_qs(database.query).get("sslmode", ["require"])
+        if len(sslmode) != 1 or sslmode[0] not in {"require", "verify-ca", "verify-full"}:
+            raise ValueError("DATABASE_URL must require TLS")
         security = os.environ.get("SMTP_SECURITY", "starttls")
         if security not in {"starttls", "ssl"}:
             raise ValueError("SMTP_SECURITY must be starttls or ssl")
@@ -41,7 +54,7 @@ class Settings:
         if "\r" in sender or "\n" in sender or "@" not in sender:
             raise ValueError("SMTP_FROM must be a valid sender address")
         return cls(
-            database_path=PROJECT_ROOT / Path(os.environ.get("SQLITE_PATH", "server/data/contact.sqlite3")),
+            database_url=database_url,
             api_key=os.environ["CONTACT_API_KEY"],
             smtp_host=os.environ["SMTP_HOST"],
             smtp_port=int(os.environ.get("SMTP_PORT", "465" if security == "ssl" else "587")),

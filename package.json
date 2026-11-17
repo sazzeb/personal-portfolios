@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "python3 -m server.dev",
+    "dev": ".venv/bin/python -m server.dev",
     "dev:web": "next dev",
-    "dev:server": "python3 -m server",
+    "dev:server": ".venv/bin/python -m server",
+    "setup:server": "python3 -m venv .venv && .venv/bin/python -m pip install -r server/requirements.txt",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

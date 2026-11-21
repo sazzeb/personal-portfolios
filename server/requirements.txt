@@ -1,5 +1,8 @@
 # Load the shared repository-root .env without overriding hosting variables.
 python-dotenv>=1.0,<2.0
 psycopg[binary]>=3.2,<3.3
+argon2-cffi>=23.1,<26
+email-validator>=2.3,<3
+zxcvbn>=4.5,<5
 # Gunicorn is the production WSGI process manager (Linux hosting).
 gunicorn>=23.0,<24.0

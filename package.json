@@ -16,6 +16,9 @@
     "assets:sync": "node scripts/sync-sammy-assets.mjs"
   },
   "dependencies": {
+    "@zxcvbn-ts/core": "^4.3.0",
+    "@zxcvbn-ts/language-common": "^4.2.0",
+    "@zxcvbn-ts/language-en": "^4.1.2",
     "gsap": "^3.15.1",
     "lucide-react": "^1.72.0",
     "motion": "^14.14.0",
@@ -24,7 +27,8 @@
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "sass": "^1.108.2",
-    "swiper": "^14.4.0"
+    "swiper": "^14.4.0",
+    "validator": "^13.15.35"
   },
   "devDependencies": {
     "@playwright/test": "^1.65.1",
@@ -32,6 +36,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/validator": "^13.15.10",
     "eslint": "^10.15.0",
     "eslint-config-next": "16.4.6",
     "prettier": "^3.10.1",

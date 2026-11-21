@@ -24,6 +24,11 @@ def forward_message(message: ContactMessage, request_id: str, settings: Settings
         "Name: " + message.name + "\nEmail: " + message.email
         + "\nSubject: " + message.subject + "\n\n" + message.message
     )
+    send_email(email, settings)
+
+
+def send_email(email: EmailMessage, settings: Settings) -> None:
+    """Deliver a prepared message using the same authenticated TLS transport."""
     context = ssl.create_default_context()
     client = None
     stage = "connect"
@@ -41,7 +46,7 @@ def forward_message(message: ContactMessage, request_id: str, settings: Settings
         stage = "authenticate"
         client.login(settings.smtp_username, settings.smtp_password)
         stage = "send"
-        refused = client.send_message(email, from_addr=settings.smtp_from, to_addrs=[settings.recipient])
+        refused = client.send_message(email, from_addr=settings.smtp_from, to_addrs=[str(email["To"])])
         if refused:
             raise smtplib.SMTPRecipientsRefused(refused)
     except (smtplib.SMTPException, OSError) as error:

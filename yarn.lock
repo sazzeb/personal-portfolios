@@ -1185,6 +1185,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/validator@npm:^13.15.10":
+  version: 13.15.10
+  resolution: "@types/validator@npm:13.15.10"
+  checksum: 10c0/3e2e65fcd37dd6961ca3fd0535293d0c42f5911dc3ca44b96f458835e6db2392b678ccbb0c9815d8c0a14e653439e6c62c7b8758a6cd1d6e390551c9e56618ac
+  languageName: node
+  linkType: hard
+
 "@typescript-eslint/eslint-plugin@npm:8.72.2":
   version: 8.72.2
   resolution: "@typescript-eslint/eslint-plugin@npm:8.72.2"
@@ -1464,6 +1471,40 @@ __metadata:
   version: 1.13.0
   resolution: "@unrs/resolver-binding-win32-x64-msvc@npm:1.13.0"
   conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@zxcvbn-ts/core@npm:^4.3.0":
+  version: 4.3.0
+  resolution: "@zxcvbn-ts/core@npm:4.3.0"
+  dependencies:
+    fastest-levenshtein: "npm:1.0.16"
+  checksum: 10c0/08540098992cdf75dc068bdb355a92932131c72254c11f29f861a7215f61b8d335f15f27920564d310c2df8fdb6f95c20d30f998fd61f8faade435c9b37d6806
+  languageName: node
+  linkType: hard
+
+"@zxcvbn-ts/dictionary-compression@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "@zxcvbn-ts/dictionary-compression@npm:3.0.1"
+  checksum: 10c0/77654331119eaeb2fb31f71974448f39b950a8a58a36e95d50e4e9324cab5304d6392efc5b2adb50dcbb7e6cf280de93e087c087252ba9473327bce6dff777de
+  languageName: node
+  linkType: hard
+
+"@zxcvbn-ts/language-common@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "@zxcvbn-ts/language-common@npm:4.2.0"
+  dependencies:
+    "@zxcvbn-ts/dictionary-compression": "npm:^3.0.1"
+  checksum: 10c0/7bdc78b09559b4d76c7e28b62e9d86c165af85f8a790a957efd6d506d758dd42e416e391e8417aedffede7d612794074a1a1391fbd83c2a48dde9884d7afe105
+  languageName: node
+  linkType: hard
+
+"@zxcvbn-ts/language-en@npm:^4.1.2":
+  version: 4.1.2
+  resolution: "@zxcvbn-ts/language-en@npm:4.1.2"
+  dependencies:
+    "@zxcvbn-ts/dictionary-compression": "npm:^3.0.1"
+  checksum: 10c0/26906280615dc3ee69fd905c5e522400b41899ff28b3a0938e189a12dd918b2910d04b48b3153440abd98d2efcae10f91515beca8612d13a84d290e3b08319d5
   languageName: node
   linkType: hard
 
@@ -2472,6 +2513,13 @@ __metadata:
   version: 2.0.6
   resolution: "fast-levenshtein@npm:2.0.6"
   checksum: 10c0/111972b37338bcb88f7d9e2c5907862c280ebf4234433b95bc611e518d192ccb2d38119c4ac86e26b668d75f7f3894f4ff5c4982899afced7ca78633b08287c4
+  languageName: node
+  linkType: hard
+
+"fastest-levenshtein@npm:1.0.16":
+  version: 1.0.16
+  resolution: "fastest-levenshtein@npm:1.0.16"
+  checksum: 10c0/7e3d8ae812a7f4fdf8cad18e9cde436a39addf266a5986f653ea0d81e0de0900f50c0f27c6d5aff3f686bcb48acbd45be115ae2216f36a6a13a7dbbf5cad878b
   languageName: node
   linkType: hard
 
@@ -4124,6 +4172,10 @@ __metadata:
     "@types/node": "npm:^20"
     "@types/react": "npm:^19"
     "@types/react-dom": "npm:^19"
+    "@types/validator": "npm:^13.15.10"
+    "@zxcvbn-ts/core": "npm:^4.3.0"
+    "@zxcvbn-ts/language-common": "npm:^4.2.0"
+    "@zxcvbn-ts/language-en": "npm:^4.1.2"
     eslint: "npm:^10.15.0"
     eslint-config-next: "npm:16.4.6"
     gsap: "npm:^3.15.1"
@@ -4138,6 +4190,7 @@ __metadata:
     swiper: "npm:^14.4.0"
     tailwindcss: "npm:^4.3.5"
     typescript: "npm:^5"
+    validator: "npm:^13.15.35"
   languageName: unknown
   linkType: soft
 
@@ -4805,6 +4858,13 @@ __metadata:
   dependencies:
     punycode: "npm:^2.1.0"
   checksum: 10c0/4ef57b45aa820d7ac6496e9208559986c665e49447cb072744c13b66925a362d96dd5a46c4530a6b8e203e5db5fe849369444440cb22ecfc26c679359e5dfa3c
+  languageName: node
+  linkType: hard
+
+"validator@npm:^13.15.35":
+  version: 13.15.35
+  resolution: "validator@npm:13.15.35"
+  checksum: 10c0/1958ebcad578128d154853a2b9bf5b95e7738dcc7d1d065e50a969812272312ec379dcaf375b9d7545e04a71de6755f60f5a4b49c1405737a9c80e11da297eef
   languageName: node
   linkType: hard
 

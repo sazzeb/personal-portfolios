@@ -36,14 +36,10 @@ yarn-error.log*
 .env*
 !.env.example
 
-# Python runtime and private contact storage
+# Python runtime
 __pycache__/
 *.py[cod]
 .venv/
-/server/data/
-*.sqlite3
-*.sqlite3-wal
-*.sqlite3-shm
 
 # vercel
 .vercel

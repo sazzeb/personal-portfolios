@@ -25,6 +25,7 @@ class Settings:
     smtp_from: str
     smtp_security: str = "starttls"
     recipient: str = "info@ekosamuel.com"
+    auth_public_url: str = "https://www.ekosamuel.com"
 
     @classmethod
     def from_environment(cls) -> "Settings":
@@ -42,6 +43,12 @@ class Settings:
             valid_database = False
         if not valid_database:
             raise ValueError("DATABASE_URL must be a PostgreSQL connection URL")
+        public_url = os.environ.get("AUTH_PUBLIC_URL", "https://www.ekosamuel.com").rstrip("/")
+        public = urlsplit(public_url)
+        if (not public.hostname or public.username or public.password or public.query or public.fragment
+                or public.path or (public.scheme != "https" and not (
+                    public.scheme == "http" and public.hostname in {"localhost", "127.0.0.1"}))):
+            raise ValueError("AUTH_PUBLIC_URL must be an HTTPS origin or a local development origin")
         sslmode = parse_qs(database.query).get("sslmode", ["require"])
         if len(sslmode) != 1 or sslmode[0] not in {"require", "verify-ca", "verify-full"}:
             raise ValueError("DATABASE_URL must require TLS")
@@ -62,4 +69,5 @@ class Settings:
             smtp_password=os.environ["SMTP_PASSWORD"],
             smtp_from=sender,
             smtp_security=security,
+            auth_public_url=public_url,
         )

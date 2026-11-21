@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { Suspense } from "react";
+import { PublicChrome } from "@/components/layout/public-chrome";
 import { sammy } from "@/config/sammy";
 import { headingFont, bodyFont } from "@/styles/fonts";
 import { SiteHeader } from "@/components/layout/site-header";
@@ -31,10 +33,18 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <a className="skip-link" href="#main-content">
           Skip to content
         </a>
-        <SiteHeader />
+        <Suspense>
+          <PublicChrome>
+            <SiteHeader />
+          </PublicChrome>
+        </Suspense>
         {children}
-        <SiteFooter />
-        <FloatingTools />
+        <Suspense>
+          <PublicChrome>
+            <SiteFooter />
+            <FloatingTools />
+          </PublicChrome>
+        </Suspense>
         <AnimationController />
       </body>
     </html>

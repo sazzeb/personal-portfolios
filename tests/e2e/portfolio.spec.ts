@@ -114,6 +114,7 @@ test("contact fields validate required content and email format", async ({
 }) => {
   await page.goto("/contact");
   const form = page.getByRole("form", { name: "Project enquiry", exact: true });
+  await expect(form.getByLabel("Your Name", { exact: true })).toBeEnabled();
   expect(
     await form.evaluate((element: HTMLFormElement) => element.checkValidity()),
   ).toBe(false);

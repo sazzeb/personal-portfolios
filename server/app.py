@@ -22,6 +22,7 @@ from .models import ContactError, ContactMessage
 from .service import ContactService
 from .settings import Settings
 from .access_view import is_browser_navigation, warning_response
+from .auth_http import handle_auth
 
 MAX_BODY_BYTES = 32768
 logger = logging.getLogger(__name__)
@@ -40,6 +41,8 @@ def create_app(settings=None):
             method = environ.get("REQUEST_METHOD", "GET")
             if path in {"/", "/health"} and method == "GET":
                 payload = {"status": "ok"}
+            elif path.startswith("/api/auth/"):
+                payload = handle_auth(environ, configuration)
             elif path != "/api/contact":
                 raise ContactError(404, "Endpoint not found.")
             elif method != "POST":
